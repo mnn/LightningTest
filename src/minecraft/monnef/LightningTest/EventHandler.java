@@ -1,5 +1,7 @@
 package monnef.LightningTest;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
@@ -35,17 +37,7 @@ public class EventHandler {
     }
 
     @ForgeSubscribe
-    public void handleWeather(WeatherEvent.RainStartedEvent event) {
-        dump(event);
-    }
-
-    @ForgeSubscribe
     public void handleWeather(WeatherEvent.RainChangedEvent event) {
-        dump(event);
-    }
-
-    @ForgeSubscribe
-    public void handleWeather(WeatherEvent.RainStoppedEvent event) {
         dump(event);
     }
 
@@ -55,27 +47,7 @@ public class EventHandler {
     }
 
     @ForgeSubscribe
-    public void handleWeather(WeatherEvent.ThunderingStartedEvent event) {
-        dump(event);
-    }
-
-    @ForgeSubscribe
-    public void handleWeather(WeatherEvent.ThunderingStoppedEvent event) {
-        dump(event);
-    }
-
-    @ForgeSubscribe
     public void handleWeather(WeatherEvent.StormChangedEvent event) {
-        dump(event);
-    }
-
-    @ForgeSubscribe
-    public void handleWeather(WeatherEvent.StormStartedEvent event) {
-        dump(event);
-    }
-
-    @ForgeSubscribe
-    public void handleWeather(WeatherEvent.StormStoppedEvent event) {
         dump(event);
     }
 
@@ -84,10 +56,19 @@ public class EventHandler {
     }
 
     public static String dump(World w, WorldInfo info, String msg) {
-        String text = String.format("%s - W[ ts:%f rs:%f it:%s ir:%s ] WI[ tt:%d rt:%d it:%s ir:%s ]", msg,
-                w.thunderingStrength, w.rainingStrength, w.isThundering(), w.isRaining(),
-                info.getThunderTime(), info.getRainTime(), info.isThundering(), info.isRaining());
-        System.out.println(text);
+        String text = String.format("%s %s: ", msg, FMLCommonHandler.instance().getSide() == Side.CLIENT ? "C" : "S");
+
+        if (w != null) {
+            text += String.format("W[%s ts:%f rs:%f it:%s ir:%s ]", w.isRemote ? "C" : "S",
+                    w.thunderingStrength, w.rainingStrength, w.isThundering(), w.isRaining());
+        }
+
+        if (info != null) {
+            text += String.format(" WI[ tt:%d rt:%d it:%s ir:%s ]", info.getThunderTime(), info.getRainTime(), info.isThundering(), info.isRaining());
+        }
+
+        LightningTest.log.info(text);
+
         return text;
     }
 }
