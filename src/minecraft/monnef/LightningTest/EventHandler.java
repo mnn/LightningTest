@@ -32,7 +32,7 @@ public class EventHandler {
             System.out.println("bolt stays");
         }
 
-        event.world.setBlockAndMetadataWithNotify(event.x, event.y, event.z, bId, 0, 3);
+        event.world.setBlock(event.x, event.y, event.z, bId);
         dump(event);
     }
 
@@ -56,7 +56,7 @@ public class EventHandler {
     }
 
     public static String dump(World w, WorldInfo info, String msg) {
-        String text = String.format("%s %s: ", msg, FMLCommonHandler.instance().getSide() == Side.CLIENT ? "C" : "S");
+        String text = String.format("%s %s: ", msg, FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT ? "C" : "S");
 
         if (w != null) {
             text += String.format("W[%s ts:%f rs:%f it:%s ir:%s ]", w.isRemote ? "C" : "S",
